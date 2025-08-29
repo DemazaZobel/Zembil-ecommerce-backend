@@ -14,7 +14,7 @@ import Review from "./Review.js";
 import Cart from "./Cart.js";
 import CartItem from "./CartItem.js";
 
-// Associations
+// Association
 
 User.hasMany(ShippingAddress, { foreignKey: "userId", as: "addresses" });
 ShippingAddress.belongsTo(User, { foreignKey: "userId" });
