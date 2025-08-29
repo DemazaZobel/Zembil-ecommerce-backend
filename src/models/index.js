@@ -95,12 +95,12 @@ Cart.hasMany(CartItem, { foreignKey: "cartId", as: "items", onDelete: "CASCADE" 
 CartItem.belongsTo(Cart, { foreignKey: "cartId", as: "cart" });
 
 // ---------------------
-// DeliveryStaff ↔ DeliveryZone (Many-to-Many)
+// DeliveryStaff ↔ DeliveryZone 
 // ---------------------
 
-DeliveryStaff.belongsToMany(DeliveryZone, { through: "DeliveryStaffZones", as: "zones" });
-DeliveryZone.belongsToMany(DeliveryStaff, { through: "DeliveryStaffZones", as: "staff" });
-
+// DeliveryZone and DeliveryStaff
+DeliveryZone.hasMany(DeliveryStaff, { foreignKey: "zoneId", as: "staff" });
+DeliveryStaff.belongsTo(DeliveryZone, { foreignKey: "zoneId", as: "zone" });
 // ---------------------
 // Soft-delete hook for User
 // ---------------------
