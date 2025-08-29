@@ -1,5 +1,4 @@
-
-import sequelize from "../config/database.js";
+import sequelize from "../config/db.js";
 import User from "./User.js";
 import DeliveryStaff from "./DeliveryStaff.js";
 import DeliveryZone from "./DeliveryZone.js";
@@ -14,59 +13,111 @@ import Review from "./Review.js";
 import Cart from "./Cart.js";
 import CartItem from "./CartItem.js";
 
-// Association
+// ---------------------
+// Users
+// ---------------------
 
-User.hasMany(ShippingAddress, { foreignKey: "userId", as: "addresses" });
-ShippingAddress.belongsTo(User, { foreignKey: "userId" });
+// Users ↔ ShippingAddresses
+User.hasMany(ShippingAddress, { foreignKey: "userId", as: "addresses", onDelete: "CASCADE" });
+ShippingAddress.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-User.hasMany(Order, { foreignKey: "userId", as: "orders" });
-Order.belongsTo(User, { foreignKey: "userId" });
+// Users ↔ Orders
+User.hasMany(Order, { foreignKey: "userId", as: "orders", onDelete: "CASCADE" });
+Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-User.hasMany(Review, { foreignKey: "userId", as: "reviews" });
-Review.belongsTo(User, { foreignKey: "userId" });
+// Users ↔ Reviews
+User.hasMany(Review, { foreignKey: "userId", as: "reviews", onDelete: "CASCADE" });
+Review.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-User.hasOne(Cart, { foreignKey: "userId", as: "cart" });
-Cart.belongsTo(User, { foreignKey: "userId" });
+// Users ↔ Cart
+User.hasOne(Cart, { foreignKey: "userId", as: "cart", onDelete: "CASCADE" });
+Cart.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-ShippingAddress.hasMany(Order, { foreignKey: "shippingAddressId", as: "orders" });
-Order.belongsTo(ShippingAddress, { foreignKey: "shippingAddressId" });
+// ---------------------
+// ShippingAddresses
+// ---------------------
 
-Order.hasMany(OrderItem, { foreignKey: "orderId", as: "items" });
-OrderItem.belongsTo(Order, { foreignKey: "orderId" });
+ShippingAddress.hasMany(Order, { foreignKey: "shippingAddressId", as: "orders", onDelete: "RESTRICT" });
+Order.belongsTo(ShippingAddress, { foreignKey: "shippingAddressId", as: "shippingAddress" });
 
-Product.hasMany(OrderItem, { foreignKey: "productId" });
-OrderItem.belongsTo(Product, { foreignKey: "productId" });
+// ---------------------
+// Orders
+// ---------------------
 
-Size.hasMany(OrderItem, { foreignKey: "sizeId" });
-OrderItem.belongsTo(Size, { foreignKey: "sizeId" });
+Order.hasMany(OrderItem, { foreignKey: "orderId", as: "items", onDelete: "CASCADE" });
+OrderItem.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 
-Category.hasMany(Product, { foreignKey: "categoryId" });
-Product.belongsTo(Category, { foreignKey: "categoryId" });
+// Orders ↔ DeliveryStaff
+DeliveryStaff.hasMany(Order, { foreignKey: "assignedTo", as: "assignedOrders", onDelete: "SET NULL" });
+Order.belongsTo(DeliveryStaff, { foreignKey: "assignedTo", as: "deliveryStaff" });
 
-Product.hasMany(Review, { foreignKey: "productId", as: "reviews" });
-Review.belongsTo(Product, { foreignKey: "productId" });
+// ---------------------
+// Products
+// ---------------------
 
-Product.hasMany(CartItem, { foreignKey: "productId" });
-CartItem.belongsTo(Product, { foreignKey: "productId" });
+Product.hasMany(OrderItem, { foreignKey: "productId", as: "orderItems", onDelete: "RESTRICT" });
+OrderItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
-Product.hasMany(ProductSize, { foreignKey: "productId", as: "productSizes" });
-ProductSize.belongsTo(Product, { foreignKey: "productId" });
+Product.hasMany(Review, { foreignKey: "productId", as: "reviews", onDelete: "CASCADE" });
+Review.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
-Size.hasMany(ProductSize, { foreignKey: "sizeId" });
-ProductSize.belongsTo(Size, { foreignKey: "sizeId" });
+Product.hasMany(CartItem, { foreignKey: "productId", as: "cartItems", onDelete: "CASCADE" });
+CartItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
-Cart.hasMany(CartItem, { foreignKey: "cartId", as: "items" });
-CartItem.belongsTo(Cart, { foreignKey: "cartId" });
+Category.hasMany(Product, { foreignKey: "categoryId", as: "products", onDelete: "RESTRICT" });
+Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
 
-Size.hasMany(CartItem, { foreignKey: "sizeId" });
-CartItem.belongsTo(Size, { foreignKey: "sizeId" });
+// ---------------------
+// Sizes
+// ---------------------
+
+Size.hasMany(OrderItem, { foreignKey: "sizeId", as: "orderItems", onDelete: "SET NULL" });
+OrderItem.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
+
+Size.hasMany(CartItem, { foreignKey: "sizeId", as: "cartItems", onDelete: "SET NULL" });
+CartItem.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
+
+Size.hasMany(ProductSize, { foreignKey: "sizeId", as: "productSizes", onDelete: "CASCADE" });
+ProductSize.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
+
+// ---------------------
+// Product Sizes (Many-to-Many with Stock info)
+// ---------------------
+
+Product.hasMany(ProductSize, { foreignKey: "productId", as: "productSizes", onDelete: "CASCADE" });
+ProductSize.belongsTo(Product, { foreignKey: "productId", as: "product" });
+
+// ---------------------
+// Cart
+// ---------------------
+
+Cart.hasMany(CartItem, { foreignKey: "cartId", as: "items", onDelete: "CASCADE" });
+CartItem.belongsTo(Cart, { foreignKey: "cartId", as: "cart" });
+
+// ---------------------
+// DeliveryStaff ↔ DeliveryZone (Many-to-Many)
+// ---------------------
 
 DeliveryStaff.belongsToMany(DeliveryZone, { through: "DeliveryStaffZones", as: "zones" });
 DeliveryZone.belongsToMany(DeliveryStaff, { through: "DeliveryStaffZones", as: "staff" });
 
-DeliveryStaff.hasMany(Order, { foreignKey: "assignedTo", as: "assignedOrders" });
-Order.belongsTo(DeliveryStaff, { foreignKey: "assignedTo", as: "deliveryStaff" });
+// ---------------------
+// Soft-delete hook for User
+// ---------------------
 
+User.addHook("beforeDestroy", async (user, options) => {
+  await user.update({
+    name: "Deleted User",
+    email: `deleted_${user.id}@example.com`,
+    passwordHash: null,
+    isActive: false,
+    deletionRequest: false,
+  }, { transaction: options.transaction });
+});
+
+// ---------------------
+// Export
+// ---------------------
 
 export {
   sequelize,

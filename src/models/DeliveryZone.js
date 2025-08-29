@@ -18,7 +18,7 @@ const DeliveryZone = sequelize.define("DeliveryZone", {
     allowNull: false,
   },
 }, {
-  tableName: "delivery_zones",
+  tableName: DeliveryZone,
   timestamps: true,
 });
 
