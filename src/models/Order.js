@@ -1,6 +1,11 @@
 // src/models/Order.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import User from "./User.js";
+
+import DeliveryStaff from "./DeliveryStaff.js";
+
+import ShippingAddress from "./ShippingAddress.js";
 
 const Order = sequelize.define(
   "Order",

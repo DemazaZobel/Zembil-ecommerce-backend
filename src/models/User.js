@@ -1,7 +1,8 @@
 // src/models/User.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import DeliveryZone from "./DeliveryZone.js"; // import the referenced model
+
+import DeliveryZone from "./DeliveryZone.js";
 
 const User = sequelize.define(
   "User",

@@ -1,6 +1,7 @@
 // src/models/DeliveryStaff.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
+import DeliveryZone from "./DeliveryZone.js";
 
 const DeliveryStaff = sequelize.define(
   "DeliveryStaff",
@@ -33,7 +34,7 @@ const DeliveryStaff = sequelize.define(
       type: DataTypes.INTEGER, 
       allowNull: false,
       references: {
-        model: DeliveryZone, // links to DeliveryZones table
+        model: DeliveryZone , // links to DeliveryZones table
         key: 'id'
       },
       onUpdate: 'CASCADE',

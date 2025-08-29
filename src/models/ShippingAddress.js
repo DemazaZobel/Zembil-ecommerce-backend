@@ -1,7 +1,8 @@
 // src/models/ShippingAddress.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import User from "./User.js"; // import User model for FK reference
+import User from "./User.js";
+
 
 const ShippingAddress = sequelize.define(
   "ShippingAddress",

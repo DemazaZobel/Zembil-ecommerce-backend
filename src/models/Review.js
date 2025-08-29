@@ -4,6 +4,8 @@ import sequelize from "../config/db.js";
 import User from "./User.js";
 import Product from "./Product.js";
 
+
+
 const Review = sequelize.define(
   "Review",
   {

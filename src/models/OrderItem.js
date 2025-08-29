@@ -2,6 +2,10 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 
+import Product from "./Product.js";
+import Size from "./Size.js";
+import Order from "./Order.js";
+
 const OrderItem = sequelize.define(
   "OrderItem",
   {

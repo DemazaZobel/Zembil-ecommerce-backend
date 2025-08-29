@@ -1,7 +1,8 @@
 import sequelize from "../config/db.js";
 import User from "./User.js";
-import DeliveryStaff from "./DeliveryStaff.js";
 import DeliveryZone from "./DeliveryZone.js";
+import DeliveryStaff from "./DeliveryStaff.js";
+
 import Category from "./Category.js";
 import Size from "./Size.js";
 import Product from "./Product.js";
