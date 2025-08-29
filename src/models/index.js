@@ -1,63 +1,74 @@
-const sequelize = require('../config/database');
-const { DataTypes } = require('sequelize');
 
-const User = require('./user')(sequelize, DataTypes);
-const DeliveryStaff = require('./deliveryStaff')(sequelize, DataTypes);
-const DeliveryZone = require('./deliveryZone')(sequelize, DataTypes);
-const Category = require('./category')(sequelize, DataTypes);
-const Size = require('./size')(sequelize, DataTypes);
-const Product = require('./product')(sequelize, DataTypes);
-const ShippingAddress = require('./shippingAddress')(sequelize, DataTypes);
-const Order = require('./order')(sequelize, DataTypes);
-const OrderItem = require('./orderItem')(sequelize, DataTypes);
-const Review = require('./review')(sequelize, DataTypes);
-const Cart = require('./cart')(sequelize, DataTypes);
-const CartItem = require('./cartItem')(sequelize, DataTypes);
+import sequelize from "../config/database.js";
+import User from "./User.js";
+import DeliveryStaff from "./DeliveryStaff.js";
+import DeliveryZone from "./DeliveryZone.js";
+import Category from "./Category.js";
+import Size from "./Size.js";
+import Product from "./Product.js";
+import ProductSize from "./ProductSize.js";
+import ShippingAddress from "./ShippingAddress.js";
+import Order from "./Order.js";
+import OrderItem from "./OrderItem.js";
+import Review from "./Review.js";
+import Cart from "./Cart.js";
+import CartItem from "./CartItem.js";
 
 // Associations
 
-User.hasMany(ShippingAddress, { foreignKey: 'userId', as: 'addresses' });
-ShippingAddress.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(ShippingAddress, { foreignKey: "userId", as: "addresses" });
+ShippingAddress.belongsTo(User, { foreignKey: "userId" });
 
-User.hasMany(Order, { foreignKey: 'userId', as: 'orders' });
-Order.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Order, { foreignKey: "userId", as: "orders" });
+Order.belongsTo(User, { foreignKey: "userId" });
 
-ShippingAddress.hasMany(Order, { foreignKey: 'shippingAddressId' });
-Order.belongsTo(ShippingAddress, { foreignKey: 'shippingAddressId' });
+User.hasMany(Review, { foreignKey: "userId", as: "reviews" });
+Review.belongsTo(User, { foreignKey: "userId" });
 
-Order.hasMany(OrderItem, { foreignKey: 'orderId', as: 'items' });
-OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
+User.hasOne(Cart, { foreignKey: "userId", as: "cart" });
+Cart.belongsTo(User, { foreignKey: "userId" });
 
-Product.hasMany(OrderItem, { foreignKey: 'productId' });
-OrderItem.belongsTo(Product, { foreignKey: 'productId' });
+ShippingAddress.hasMany(Order, { foreignKey: "shippingAddressId", as: "orders" });
+Order.belongsTo(ShippingAddress, { foreignKey: "shippingAddressId" });
 
-Size.hasMany(OrderItem, { foreignKey: 'sizeId' });
-OrderItem.belongsTo(Size, { foreignKey: 'sizeId' });
+Order.hasMany(OrderItem, { foreignKey: "orderId", as: "items" });
+OrderItem.belongsTo(Order, { foreignKey: "orderId" });
 
-Category.hasMany(Product, { foreignKey: 'categoryId' });
-Product.belongsTo(Category, { foreignKey: 'categoryId' });
+Product.hasMany(OrderItem, { foreignKey: "productId" });
+OrderItem.belongsTo(Product, { foreignKey: "productId" });
 
-DeliveryStaff.hasMany(Order, { foreignKey: 'assignedTo' });
-Order.belongsTo(DeliveryStaff, { foreignKey: 'assignedTo', as: 'deliveryStaff' });
+Size.hasMany(OrderItem, { foreignKey: "sizeId" });
+OrderItem.belongsTo(Size, { foreignKey: "sizeId" });
 
-DeliveryStaff.belongsToMany(DeliveryZone, { through: 'DeliveryStaffZones', as: 'zones' });
-DeliveryZone.belongsToMany(DeliveryStaff, { through: 'DeliveryStaffZones', as: 'staff' });
+Category.hasMany(Product, { foreignKey: "categoryId" });
+Product.belongsTo(Category, { foreignKey: "categoryId" });
 
-User.hasOne(Cart, { foreignKey: 'userId' });
-Cart.belongsTo(User, { foreignKey: 'userId' });
+Product.hasMany(Review, { foreignKey: "productId", as: "reviews" });
+Review.belongsTo(Product, { foreignKey: "productId" });
 
-Cart.hasMany(CartItem, { foreignKey: 'cartId', as: 'items' });
-CartItem.belongsTo(Cart, { foreignKey: 'cartId' });
+Product.hasMany(CartItem, { foreignKey: "productId" });
+CartItem.belongsTo(Product, { foreignKey: "productId" });
 
-Product.hasMany(CartItem, { foreignKey: 'productId' });
-CartItem.belongsTo(Product, { foreignKey: 'productId' });
+Product.hasMany(ProductSize, { foreignKey: "productId", as: "productSizes" });
+ProductSize.belongsTo(Product, { foreignKey: "productId" });
 
-User.hasMany(Review, { foreignKey: 'userId' });
-Product.hasMany(Review, { foreignKey: 'productId' });
-Review.belongsTo(User, { foreignKey: 'userId' });
-Review.belongsTo(Product, { foreignKey: 'productId' });
+Size.hasMany(ProductSize, { foreignKey: "sizeId" });
+ProductSize.belongsTo(Size, { foreignKey: "sizeId" });
 
-module.exports = {
+Cart.hasMany(CartItem, { foreignKey: "cartId", as: "items" });
+CartItem.belongsTo(Cart, { foreignKey: "cartId" });
+
+Size.hasMany(CartItem, { foreignKey: "sizeId" });
+CartItem.belongsTo(Size, { foreignKey: "sizeId" });
+
+DeliveryStaff.belongsToMany(DeliveryZone, { through: "DeliveryStaffZones", as: "zones" });
+DeliveryZone.belongsToMany(DeliveryStaff, { through: "DeliveryStaffZones", as: "staff" });
+
+DeliveryStaff.hasMany(Order, { foreignKey: "assignedTo", as: "assignedOrders" });
+Order.belongsTo(DeliveryStaff, { foreignKey: "assignedTo", as: "deliveryStaff" });
+
+
+export {
   sequelize,
   User,
   DeliveryStaff,
@@ -65,6 +76,7 @@ module.exports = {
   Category,
   Size,
   Product,
+  ProductSize,
   ShippingAddress,
   Order,
   OrderItem,
