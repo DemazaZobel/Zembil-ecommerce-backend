@@ -14,7 +14,7 @@ const Order = sequelize.define(
       type: DataTypes.INTEGER, 
       allowNull: false,
       references: {
-        model: 'users', // references Users table
+        model:User, // references Users table
         key: 'id'
       },
       onUpdate: 'CASCADE',

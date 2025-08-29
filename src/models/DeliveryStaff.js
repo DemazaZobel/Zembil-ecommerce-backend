@@ -33,7 +33,7 @@ const DeliveryStaff = sequelize.define(
       type: DataTypes.INTEGER, 
       allowNull: false,
       references: {
-        model: 'delivery_zones', // links to DeliveryZones table
+        model: DeliveryZone, // links to DeliveryZones table
         key: 'id'
       },
       onUpdate: 'CASCADE',
