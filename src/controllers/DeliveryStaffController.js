@@ -30,11 +30,10 @@ export const getDeliveryStaffById = async (req, res, next) => {
 // Create new delivery staff
 export const createDeliveryStaff = async (req, res, next) => {
   try {
-    const { name, email, password, role, zoneId, area } = req.body;
+    const { name, email, password, role, zoneId } = req.body;
 
-    // Validate required fields
     if (!name || !email || !password || !zoneId) {
-      return res.status(400).json({ message: "Name, email, password, zoneId,  are required" });
+      return res.status(400).json({ message: "Name, email, password, and zoneId are required" });
     }
 
     // Hash password
@@ -46,7 +45,6 @@ export const createDeliveryStaff = async (req, res, next) => {
       passwordHash: hashedPassword,
       role: role || "delivery",
       zoneId,
-      // area
     });
 
     res.status(201).json(staff);
@@ -61,19 +59,14 @@ export const updateDeliveryStaff = async (req, res, next) => {
     const staff = await DeliveryStaff.findByPk(req.params.id);
     if (!staff) return res.status(404).json({ message: "Staff not found" });
 
-    const { name, email, password, role, zoneId, area } = req.body;
-
-    // Update password if provided
-    if (password) {
-      staff.passwordHash = await bcrypt.hash(password, 10);
-    }
+    const { name, email, password, role, zoneId } = req.body;
+    if (password) staff.passwordHash = await bcrypt.hash(password, 10);
 
     await staff.update({
       name: name || staff.name,
       email: email || staff.email,
       role: role || staff.role,
       zoneId: zoneId || staff.zoneId,
-      // area: area || staff.area
     });
 
     res.json({ message: "Staff updated successfully", staff });

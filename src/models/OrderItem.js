@@ -56,7 +56,7 @@ const OrderItem = sequelize.define(
     },
   },
   { 
-    tableName: "order_items", 
+    tableName: "orderitems", 
     timestamps: false // optional, only needed if you want createdAt/updatedAt
   }
 );
