@@ -1,6 +1,10 @@
 // src/models/OrderItem.js
+import sequelize from "../config/db.js"; // ✅ now works
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+
+import Product from "./Product.js";
+import Size from "./Size.js";
+import Order from "./Order.js";
 
 const OrderItem = sequelize.define(
   "OrderItem",
@@ -52,7 +56,7 @@ const OrderItem = sequelize.define(
     },
   },
   { 
-    tableName: "order_items", 
+    tableName: "orderitems", 
     timestamps: false // optional, only needed if you want createdAt/updatedAt
   }
 );

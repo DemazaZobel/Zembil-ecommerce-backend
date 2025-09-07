@@ -1,6 +1,6 @@
 // src/models/Cart.js
+import sequelize from "../config/db.js"; // ✅ now works
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
 
 const Cart = sequelize.define(
   "Cart",
@@ -14,7 +14,7 @@ const Cart = sequelize.define(
       type: DataTypes.INTEGER, 
       allowNull: false,
       references: {
-        model: User, // links to User table
+        model: 'users', // table name as string
         key: 'id'
       },
       onUpdate: 'CASCADE',

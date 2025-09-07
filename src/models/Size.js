@@ -1,7 +1,5 @@
-// src/models/Size.js
+import sequelize from "../config/db.js"; // ✅ now works
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
-
 const Size = sequelize.define(
   "Size",
   {

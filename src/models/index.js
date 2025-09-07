@@ -1,7 +1,9 @@
-import sequelize from "../config/db.js";
+// src/models/index.js
+import sequelize from "../config/db.js"; // default import
 import User from "./User.js";
-import DeliveryStaff from "./DeliveryStaff.js";
 import DeliveryZone from "./DeliveryZone.js";
+import DeliveryStaff from "./DeliveryStaff.js";
+
 import Category from "./Category.js";
 import Size from "./Size.js";
 import Product from "./Product.js";
@@ -14,7 +16,7 @@ import Cart from "./Cart.js";
 import CartItem from "./CartItem.js";
 
 // ---------------------
-// Users
+// Define Associations
 // ---------------------
 
 // Users ↔ ShippingAddresses
@@ -33,17 +35,11 @@ Review.belongsTo(User, { foreignKey: "userId", as: "user" });
 User.hasOne(Cart, { foreignKey: "userId", as: "cart", onDelete: "CASCADE" });
 Cart.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-// ---------------------
-// ShippingAddresses
-// ---------------------
-
+// ShippingAddresses ↔ Orders
 ShippingAddress.hasMany(Order, { foreignKey: "shippingAddressId", as: "orders", onDelete: "RESTRICT" });
 Order.belongsTo(ShippingAddress, { foreignKey: "shippingAddressId", as: "shippingAddress" });
 
-// ---------------------
-// Orders
-// ---------------------
-
+// Orders ↔ OrderItems
 Order.hasMany(OrderItem, { foreignKey: "orderId", as: "items", onDelete: "CASCADE" });
 OrderItem.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 
@@ -51,10 +47,7 @@ OrderItem.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 DeliveryStaff.hasMany(Order, { foreignKey: "assignedTo", as: "assignedOrders", onDelete: "SET NULL" });
 Order.belongsTo(DeliveryStaff, { foreignKey: "assignedTo", as: "deliveryStaff" });
 
-// ---------------------
-// Products
-// ---------------------
-
+// Products ↔ OrderItems, Reviews, CartItems
 Product.hasMany(OrderItem, { foreignKey: "productId", as: "orderItems", onDelete: "RESTRICT" });
 OrderItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
@@ -67,10 +60,7 @@ CartItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 Category.hasMany(Product, { foreignKey: "categoryId", as: "products", onDelete: "RESTRICT" });
 Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
 
-// ---------------------
-// Sizes
-// ---------------------
-
+// Sizes ↔ OrderItems, CartItems, ProductSizes
 Size.hasMany(OrderItem, { foreignKey: "sizeId", as: "orderItems", onDelete: "SET NULL" });
 OrderItem.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
 
@@ -80,31 +70,19 @@ CartItem.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
 Size.hasMany(ProductSize, { foreignKey: "sizeId", as: "productSizes", onDelete: "CASCADE" });
 ProductSize.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
 
-// ---------------------
-// Product Sizes (Many-to-Many with Stock info)
-// ---------------------
-
+// Product ↔ ProductSizes
 Product.hasMany(ProductSize, { foreignKey: "productId", as: "productSizes", onDelete: "CASCADE" });
 ProductSize.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
-// ---------------------
-// Cart
-// ---------------------
-
+// Cart ↔ CartItems
 Cart.hasMany(CartItem, { foreignKey: "cartId", as: "items", onDelete: "CASCADE" });
 CartItem.belongsTo(Cart, { foreignKey: "cartId", as: "cart" });
 
-// ---------------------
-// DeliveryStaff ↔ DeliveryZone 
-// ---------------------
-
-// DeliveryZone and DeliveryStaff
+// DeliveryStaff ↔ DeliveryZone
 DeliveryZone.hasMany(DeliveryStaff, { foreignKey: "zoneId", as: "staff" });
 DeliveryStaff.belongsTo(DeliveryZone, { foreignKey: "zoneId", as: "zone" });
-// ---------------------
-// Soft-delete hook for User
-// ---------------------
 
+// Soft-delete hook for User
 User.addHook("beforeDestroy", async (user, options) => {
   await user.update({
     name: "Deleted User",
@@ -119,8 +97,10 @@ User.addHook("beforeDestroy", async (user, options) => {
 // Export
 // ---------------------
 
+export default sequelize; // default export
+
+// Optional: export all models if needed
 export {
-  sequelize,
   User,
   DeliveryStaff,
   DeliveryZone,
