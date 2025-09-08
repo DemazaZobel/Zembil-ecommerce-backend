@@ -7,12 +7,14 @@ import {
   deleteDeliveryStaff,
 } from "../controllers/DeliveryStaffController.js";
 
+import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
 
-router.get("/", getAllDeliveryStaff);
-router.get("/:id", getDeliveryStaffById);
-router.post("/", createDeliveryStaff);
-router.put("/:id", updateDeliveryStaff);
-router.delete("/:id", deleteDeliveryStaff);
+router.get("/", verifyToken, verifyAdmin, getAllDeliveryStaff);
+router.get("/:id", verifyToken, getDeliveryStaffById);
+router.post("/", verifyToken, verifyAdmin, createDeliveryStaff);
+router.put("/:id", verifyToken, verifyAdmin, updateDeliveryStaff);
+router.delete("/:id", verifyToken, verifyAdmin, deleteDeliveryStaff);
 
 export default router;

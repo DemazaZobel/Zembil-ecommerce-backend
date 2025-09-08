@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import "./src/models/index.js";// registers all models + associations
+import path from "path";
+
 
 // Routes
 import authRoutes from "./src/routes/authRoutes.js";
@@ -42,7 +44,9 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/orderItems", orderItemRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/shippingAddresses", shippingAddressRoutes);
-app.use("/uploads", express.static("uploads"));
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
 
 // Health check
 app.get("/api/health", (req, res) => {
