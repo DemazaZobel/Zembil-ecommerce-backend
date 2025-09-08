@@ -3,6 +3,8 @@ import sequelize from "../config/db.js";
 import Order from "../models/Order.js";
 import OrderItem from "../models/OrderItem.js";
 import Product from "../models/Product.js";
+import User from "../models/User.js";
+import DeliveryStaff from "../models/DeliveryStaff.js";
 
 // Create a new order
 export const createOrder = async (req, res, next) => {
@@ -41,37 +43,43 @@ export const createOrder = async (req, res, next) => {
     res.status(201).json({ message: "Order created successfully", order, orderItems });
   } catch (error) {
     await t.rollback();
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Get all orders
-export const getAllOrders = async (req, res, next) => {
+export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.findAll({
       include: [
+        { model: User, as: "user", attributes: ["id", "name", "email"] },
+        { model: DeliveryStaff, as: "deliveryStaff", attributes: ["id", "name", "email"] },
         {
           model: OrderItem,
-          as: "items", // must match your Order.hasMany(OrderItem, { as: "items" })
-          include: [{ model: Product, as: "product" }], // must match OrderItem.belongsTo(Product, { as: "product" })
+          as: "items",
+          include: [{ model: Product, as: "product", attributes: ["id", "name", "price"] }],
         },
       ],
     });
     res.json(orders);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error fetching orders" });
   }
 };
 
-// Get single order by ID
-export const getOrderById = async (req, res, next) => {
+// Get single order
+export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.id, {
       include: [
+        { model: User, as: "user", attributes: ["id", "name", "email"] },
+        { model: DeliveryStaff, as: "deliveryStaff", attributes: ["id", "name", "email"] },
         {
           model: OrderItem,
           as: "items",
-          include: [{ model: Product, as: "product" }],
+          include: [{ model: Product, as: "product", attributes: ["id", "name", "price"] }],
         },
       ],
     });
@@ -79,12 +87,13 @@ export const getOrderById = async (req, res, next) => {
     if (!order) return res.status(404).json({ message: "Order not found" });
     res.json(order);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error fetching order" });
   }
 };
 
 // Update order
-export const updateOrder = async (req, res, next) => {
+export const updateOrder = async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
@@ -92,12 +101,13 @@ export const updateOrder = async (req, res, next) => {
     await order.update(req.body);
     res.json({ message: "Order updated successfully", order });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error updating order" });
   }
 };
 
 // Delete order
-export const deleteOrder = async (req, res, next) => {
+export const deleteOrder = async (req, res) => {
   const t = await sequelize.transaction();
   try {
     const order = await Order.findByPk(req.params.id);
@@ -110,6 +120,7 @@ export const deleteOrder = async (req, res, next) => {
     res.json({ message: "Order deleted successfully" });
   } catch (error) {
     await t.rollback();
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error deleting order" });
   }
 };
