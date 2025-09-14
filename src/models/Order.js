@@ -17,19 +17,21 @@ const Order = sequelize.define(
     userId: { 
       type: DataTypes.INTEGER, 
       allowNull: false,
+      field: "userid", // ✅ matches DB column
       references: {
-        model: User, // references Users table
+        model: User,
         key: "id"
       },
       onUpdate: "CASCADE",
       onDelete: "CASCADE"
     },
 
-    assignedTo: { 
+    assignedToId: { 
       type: DataTypes.INTEGER, 
       allowNull: true,
+      field: "assignedtoid", // ✅ matches DB column
       references: {
-        model: DeliveryStaff, // ✅ references DeliveryStaff table
+        model: DeliveryStaff,
         key: "id"
       },
       onUpdate: "CASCADE",
@@ -40,8 +42,9 @@ const Order = sequelize.define(
     shippingAddressId: { 
       type: DataTypes.INTEGER, 
       allowNull: false,
+      field: "shippingaddressid", // ✅ matches DB column
       references: {
-        model: ShippingAddress, // ✅ references ShippingAddress table
+        model: ShippingAddress,
         key: "id"
       },
       onUpdate: "CASCADE",
@@ -52,30 +55,35 @@ const Order = sequelize.define(
     totalPrice: { 
       type: DataTypes.DECIMAL(10, 2), 
       allowNull: false,
+      field: "totalprice", // ✅ matches DB column
       comment: "Total order amount"
     },
 
     paymentStatus: { 
       type: DataTypes.STRING(50), 
       allowNull: false,
+      field: "paymentstatus", // ✅ matches DB column
       comment: "Pending, Completed, Failed, etc."
     },
 
     paymentMethod: { 
       type: DataTypes.STRING(50), 
       allowNull: true,
+      field: "paymentmethod", // ✅ matches DB column
       comment: "Cash, Card, Online Payment etc."
     },
 
     paymentReference: { 
       type: DataTypes.STRING(100), 
       allowNull: true,
+      field: "paymentreference", // ✅ matches DB column
       comment: "Transaction ID or reference"
     },
 
     orderStatus: { 
       type: DataTypes.STRING(50), 
       allowNull: false,
+      field: "orderstatus", // ✅ matches DB column
       comment: "Processing, Shipped, Delivered, etc."
     },
   },

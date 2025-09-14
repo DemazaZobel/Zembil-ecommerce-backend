@@ -7,7 +7,7 @@ import path from "path";
 
 // Routes
 import authRoutes from "./src/routes/authRoutes.js";
-import userRoutes from "./src/routes/UserRoutes.js";
+import userRoutes from "./src/routes/userRoutes.js";
 import deliveryStaffRoutes from "./src/routes/DeliveryStaffRoutes.js";
 import deliveryZoneRoutes from "./src/routes/DeliveryZoneRoutes.js";
 import categoryRoutes from "./src/routes/CategoryRoutes.js";
