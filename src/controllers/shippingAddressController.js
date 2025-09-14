@@ -1,56 +1,58 @@
 import ShippingAddress from "../models/ShippingAddress.js";
-import User from "../models/User.js";
 
-export const getAllShippingAddresses = async (req, res, next) => {
-  try {
-    const addresses = await ShippingAddress.findAll({
-      include: { model: User, as: "user", attributes: ["id", "name", "email"] },
-    });
-    res.json(addresses);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getShippingAddressById = async (req, res, next) => {
-  try {
-    const address = await ShippingAddress.findByPk(req.params.id, {
-      include: { model: User, as: "user", attributes: ["id", "name", "email"] },
-    });
-    if (!address) return res.status(404).json({ message: "Address not found" });
-    res.json(address);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const createShippingAddress = async (req, res, next) => {
+// Create new address
+export const createAddress = async (req, res) => {
   try {
     const address = await ShippingAddress.create(req.body);
     res.status(201).json(address);
   } catch (error) {
-    next(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const updateShippingAddress = async (req, res, next) => {
+// Get all addresses
+export const getAddresses = async (req, res) => {
   try {
-    const address = await ShippingAddress.findByPk(req.params.id);
-    if (!address) return res.status(404).json({ message: "Address not found" });
-    await address.update(req.body);
-    res.json({ message: "Address updated", address });
+    const addresses = await ShippingAddress.findAll();
+    res.json(addresses);
   } catch (error) {
-    next(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const deleteShippingAddress = async (req, res, next) => {
+// Get single address by ID
+export const getAddressById = async (req, res) => {
   try {
     const address = await ShippingAddress.findByPk(req.params.id);
     if (!address) return res.status(404).json({ message: "Address not found" });
+    res.json(address);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Update address
+export const updateAddress = async (req, res) => {
+  try {
+    const address = await ShippingAddress.findByPk(req.params.id);
+    if (!address) return res.status(404).json({ message: "Address not found" });
+
+    await address.update(req.body);
+    res.json(address);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete address
+export const deleteAddress = async (req, res) => {
+  try {
+    const address = await ShippingAddress.findByPk(req.params.id);
+    if (!address) return res.status(404).json({ message: "Address not found" });
+
     await address.destroy();
     res.json({ message: "Address deleted" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ message: error.message });
   }
 };

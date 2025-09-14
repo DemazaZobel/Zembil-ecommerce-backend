@@ -1,18 +1,18 @@
 import express from "express";
 import {
-  getAllShippingAddresses,
-  getShippingAddressById,
-  createShippingAddress,
-  updateShippingAddress,
-  deleteShippingAddress,
+  createAddress,
+  getAddresses,
+  getAddressById,
+  updateAddress,
+  deleteAddress,
 } from "../controllers/shippingAddressController.js";
 
 const router = express.Router();
 
-router.get("/", getAllShippingAddresses);
-router.get("/:id", getShippingAddressById);
-router.post("/", createShippingAddress);
-router.put("/:id", updateShippingAddress);
-router.delete("/:id", deleteShippingAddress);
+router.post("/", createAddress);       // POST /api/shippingAddress
+router.get("/", getAddresses);         // GET  /api/shippingAddress
+router.get("/:id", getAddressById);    // GET  /api/shippingAddress/:id
+router.put("/:id", updateAddress);     // PUT  /api/shippingAddress/:id
+router.delete("/:id", deleteAddress);  // DELETE /api/shippingAddress/:id
 
 export default router;

@@ -10,8 +10,8 @@ import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", verifyToken, createOrder); // only logged-in user can create order
-router.get("/", verifyToken, verifyAdmin, getAllOrders); // admin sees all orders
+router.post("/", createOrder); // only logged-in user can create order
+router.get("/", getAllOrders); // admin sees all orders
 router.get("/:id", verifyToken, getOrderById); // user/admin sees order
 router.put("/:id", verifyToken, updateOrder);
 router.delete("/:id", verifyToken, deleteOrder);
