@@ -6,14 +6,25 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
 // Register a new user
-export const registerUser = async ({ name, email, password, role = "customer", zoneId = null }) => {
+export const registerUser = async ({ name, email, password, zoneId = null }) => {
+  const role = "admin"; // manually hardcoded
+
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) throw { status: 400, message: "Email already exists" };
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, passwordHash, role, zoneId });
+
+  const user = await User.create({
+    name,
+    email,
+    passwordHash,
+    role, // this must match the DB column
+    zoneId,
+  });
+
   return user;
 };
+
 
 // Login user
 export const loginUser = async ({ email, password }) => {

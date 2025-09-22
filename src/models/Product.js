@@ -55,7 +55,7 @@ const Product = sequelize.define(
     categoryId: { type: DataTypes.INTEGER, allowNull: false },
     images: { type: DataTypes.JSON, allowNull: true }, // Array of image paths
     tags: { type: DataTypes.JSON, allowNull: true },
-    sizes: { type: DataTypes.JSON, allowNull: true },
+    
     onSale: { type: DataTypes.BOOLEAN, defaultValue: false },
     saleType: { type: DataTypes.STRING(20) },
     saleValue: { type: DataTypes.DECIMAL(10, 2) },

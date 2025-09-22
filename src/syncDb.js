@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
+import path from "path";
+
+dotenv.config({ path: path.resolve('../.env') });
 
 console.log("DB_NAME:", process.env.DB_NAME);
 console.log("DB_USER:", process.env.DB_USER);

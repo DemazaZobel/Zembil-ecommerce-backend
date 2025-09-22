@@ -19,7 +19,6 @@
 // export default Category;
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
-import Product from "./Product.js"; // import Product for association
 
 // Define Category model
 const Category = sequelize.define(

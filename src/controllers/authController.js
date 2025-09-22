@@ -4,41 +4,26 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 // -------------------- REGISTER --------------------
-export const register = async (req, res, next) => {
+// src/controllers/authController.js
+export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
-    // Validate required fields
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Name, email, and password are required" });
-    }
-
-    // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
 
-    // Hash the password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Set default role if not provided
-    const roleToSave = role || "user"; // default role = "user"
-
-    // Create user
     const newUser = await User.create({
       name,
       email,
-      passwordHash, // matches your DB column
-      role: roleToSave,
+      passwordHash,
+      role: "admin", // manually set role here
     });
 
-    // Optionally generate JWT token immediately after registration
-    const token = jwt.sign(
-      { id: newUser.id, role: newUser.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
-    );
+    const token = jwt.sign({ id: newUser.id, role: newUser.role }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN || "1d",
+    });
 
     res.status(201).json({
       message: "User registered successfully",

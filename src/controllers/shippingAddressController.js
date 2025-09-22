@@ -27,6 +27,9 @@ export const getShippingAddressById = async (req, res, next) => {
 export const createShippingAddress = async (req, res, next) => {
   try {
     const address = await ShippingAddress.create(req.body);
+    if (!req.body.userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
     res.status(201).json(address);
   } catch (error) {
     next(error);
