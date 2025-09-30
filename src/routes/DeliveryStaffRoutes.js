@@ -5,16 +5,18 @@ import {
   createDeliveryStaff,
   updateDeliveryStaff,
   deleteDeliveryStaff,
+  loginDeliveryStaff,
 } from "../controllers/DeliveryStaffController.js";
 
 import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", verifyToken, verifyAdmin, getAllDeliveryStaff);
-router.get("/:id", verifyToken, getDeliveryStaffById);
-router.post("/", verifyToken, verifyAdmin, createDeliveryStaff);
-router.put("/:id", verifyToken, verifyAdmin, updateDeliveryStaff);
-router.delete("/:id", verifyToken, verifyAdmin, deleteDeliveryStaff);
+router.get("/", verifyAdmin, getAllDeliveryStaff);
+router.get("/:id", getDeliveryStaffById);
+router.post("/", verifyAdmin, createDeliveryStaff);
+router.put("/:id", updateDeliveryStaff);
+router.delete("/:id", verifyAdmin, deleteDeliveryStaff);
+router.post("/login", loginDeliveryStaff);
 
 export default router;

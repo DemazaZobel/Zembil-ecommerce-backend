@@ -3,6 +3,12 @@ import OrderItem from "../models/OrderItem.js";
 import User from "../models/User.js";
 import ShippingAddress from "../models/ShippingAddress.js";
 import DeliveryStaff from "../models/DeliveryStaff.js";
+import Product from "../models/Product.js";
+import Size from "../models/Size.js";
+
+// -------------------------
+// Orders
+// -------------------------
 
 // Create a new order
 export const createOrder = async (data) => {
@@ -10,17 +16,42 @@ export const createOrder = async (data) => {
   return order;
 };
 
-// Get all orders
+// Get all orders with full details (admin dashboard)
 export const getAllOrders = async () => {
   return await Order.findAll({
-    include: ["items", "user", "shippingAddress", "deliveryStaff"]
+    include: [
+      {
+        model: OrderItem,
+        as: "items",
+        include: [
+          { model: Product, as: "productDetail" },
+          { model: Size, as: "sizeDetail" },
+        ],
+      },
+      { model: User, as: "user", attributes: ["id", "name", "email", "phone"] },
+      { model: ShippingAddress, as: "shippingAddress" },
+      { model: DeliveryStaff, as: "deliveryStaff", attributes: ["id", "name", "phone"] },
+    ],
+    order: [["createdAt", "DESC"]],
   });
 };
 
-// Get order by ID
+// Get a single order by ID with full details
 export const getOrderById = async (id) => {
   return await Order.findByPk(id, {
-    include: ["items", "user", "shippingAddress", "deliveryStaff"]
+    include: [
+      {
+        model: OrderItem,
+        as: "items",
+        include: [
+          { model: Product, as: "productDetail" },
+          { model: Size, as: "sizeDetail" },
+        ],
+      },
+      { model: User, as: "user", attributes: ["id", "name", "email", "phone"] },
+      { model: ShippingAddress, as: "shippingAddress" },
+      { model: DeliveryStaff, as: "deliveryStaff", attributes: ["id", "name", "phone"] },
+    ],
   });
 };
 
@@ -40,5 +71,20 @@ export const deleteOrder = async (id) => {
 
 // Get all orders assigned to a delivery staff
 export const getOrdersByStaff = async (staffId) => {
-  return await Order.findAll({ where: { assignedTo: staffId } });
+  return await Order.findAll({
+    where: { assignedTo: staffId },
+    include: [
+      {
+        model: OrderItem,
+        as: "items",
+        include: [
+          { model: Product, as: "productDetail" },
+          { model: Size, as: "sizeDetail" },
+        ],
+      },
+      { model: User, as: "user", attributes: ["id", "name", "email", "phone"] },
+      { model: ShippingAddress, as: "shippingAddress" },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
 };

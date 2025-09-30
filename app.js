@@ -20,6 +20,8 @@ import orderRoutes from "./src/routes/OrderRoutes.js";
 import orderItemRoutes from "./src/routes/OrderItemRoutes.js";
 import reviewRoutes from "./src/routes/ReviewRoutes.js";
 import shippingAddressRoutes from "./src/routes/ShippingAddressRoutes.js";
+import contactRouter from "./src/routes/contact.js";
+import delivery from "./src/routes/delivery.js";
 
 dotenv.config();
 const app = express();
@@ -32,8 +34,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/deliveryStaff", deliveryStaffRoutes);
-app.use("/api/deliveryZones", deliveryZoneRoutes);
+app.use("/api/deliverystaff", deliveryStaffRoutes);
+app.use("/api/deliveryzones", deliveryZoneRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/sizes", sizeRoutes);
@@ -46,6 +48,8 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/shippingAddresses", shippingAddressRoutes);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/api/contact", contactRouter);
+app.use("/api/delivery", delivery);
 
 
 // Health check

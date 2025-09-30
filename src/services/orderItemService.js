@@ -23,10 +23,13 @@ export const removeOrderItem = async (itemId) => {
   return await item.destroy();
 };
 
-// Get all items in an order
+// Get all items in an order (with proper aliases)
 export const getOrderItems = async (orderId) => {
   return await OrderItem.findAll({
     where: { orderId },
-    include: ["product", "size"]
+    include: [
+      { model: Product, as: "productDetail" },
+      { model: Size, as: "sizeDetail" },
+    ],
   });
 };
