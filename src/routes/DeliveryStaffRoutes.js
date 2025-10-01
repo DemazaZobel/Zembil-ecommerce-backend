@@ -12,11 +12,11 @@ import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", verifyAdmin, getAllDeliveryStaff);
+router.get("/",  getAllDeliveryStaff);
 router.get("/:id", getDeliveryStaffById);
-router.post("/", verifyAdmin, createDeliveryStaff);
+router.post("/",  createDeliveryStaff);
 router.put("/:id", updateDeliveryStaff);
-router.delete("/:id", verifyAdmin, deleteDeliveryStaff);
+router.delete("/:id", verifyToken, verifyAdmin, deleteDeliveryStaff);
 router.post("/login", loginDeliveryStaff);
 
 export default router;

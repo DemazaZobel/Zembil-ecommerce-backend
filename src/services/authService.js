@@ -7,7 +7,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
 // Register a new user
 export const registerUser = async ({ name, email, password, zoneId = null }) => {
-  const role = "admin"; // manually hardcoded
+  const role = "user"; // manually hardcoded
 
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) throw { status: 400, message: "Email already exists" };

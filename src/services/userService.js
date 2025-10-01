@@ -30,11 +30,16 @@ class UserService {
   }
 
   // Delete user
+  // UserService.js
   async deleteUser(id) {
     const user = await User.findByPk(id);
     if (!user) throw new Error("User not found");
-    return await user.destroy();
+
+    // Disable hooks to avoid validation issues
+    return await user.destroy({ hooks: false });
   }
+
+
 
   // Fetch user cart
   async getUserCart(userId) {
